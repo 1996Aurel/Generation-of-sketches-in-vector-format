@@ -111,13 +111,13 @@ class DecoderRNN(nn.Module):
         else:
             len_out = 1
                                    
-        pi = F.softmax(pi.transpose(0,1).squeeze(), dim = -1).view(len_out,-1,self.hp.M)   
-        sigma_x = torch.exp(sigma_x.transpose(0,1).squeeze()).view(len_out,-1,self.hp.M)
-        sigma_y = torch.exp(sigma_y.transpose(0,1).squeeze()).view(len_out,-1,self.hp.M)
-        rho_xy = torch.tanh(rho_xy.transpose(0,1).squeeze()).view(len_out,-1,self.hp.M)
-        mu_x = mu_x.transpose(0,1).squeeze().contiguous().view(len_out,-1,self.hp.M)
-        mu_y = mu_y.transpose(0,1).squeeze().contiguous().view(len_out,-1,self.hp.M)
-        q = F.softmax(params_pen, dim = -1).view(len_out,-1,3)    
+        pi = F.softmax(pi.transpose(0, 1).squeeze(), dim = -1).view(len_out, -1, self.hp.M)   
+        sigma_x = torch.exp(sigma_x.transpose(0, 1).squeeze()).view(len_out, -1, self.hp.M)
+        sigma_y = torch.exp(sigma_y.transpose(0, 1).squeeze()).view(len_out, -1, self.hp.M)
+        rho_xy = torch.tanh(rho_xy.transpose(0, 1).squeeze()).view(len_out, -1, self.hp.M)
+        mu_x = mu_x.transpose(0, 1).squeeze().contiguous().view(len_out, -1, self.hp.M)
+        mu_y = mu_y.transpose(0, 1).squeeze().contiguous().view(len_out, -1, self.hp.M)
+        q = F.softmax(params_pen, dim = -1).view(len_out, -1, 3)    
         return pi, mu_x, mu_y, sigma_x, sigma_y, rho_xy, q, hidden, cell
 
 
@@ -161,13 +161,13 @@ class CondDecoderRNN(nn.Module):
         else:
             len_out = 1
                                    
-        pi = F.softmax(pi.transpose(0,1).squeeze(), dim = -1).view(len_out,-1,self.hp.M)   
-        sigma_x = torch.exp(sigma_x.transpose(0,1).squeeze()).view(len_out,-1,self.hp.M)
-        sigma_y = torch.exp(sigma_y.transpose(0,1).squeeze()).view(len_out,-1,self.hp.M)
-        rho_xy = torch.tanh(rho_xy.transpose(0,1).squeeze()).view(len_out,-1,self.hp.M)
-        mu_x = mu_x.transpose(0,1).squeeze().contiguous().view(len_out,-1,self.hp.M)
-        mu_y = mu_y.transpose(0,1).squeeze().contiguous().view(len_out,-1,self.hp.M)
-        q = F.softmax(params_pen, dim = -1).view(len_out,-1,3)    
+        pi = F.softmax(pi.transpose(0, 1).squeeze(), dim = -1).view(len_out, -1, self.hp.M)   
+        sigma_x = torch.exp(sigma_x.transpose(0, 1).squeeze()).view(len_out, -1, self.hp.M)
+        sigma_y = torch.exp(sigma_y.transpose(0, 1).squeeze()).view(len_out, -1, self.hp.M)
+        rho_xy = torch.tanh(rho_xy.transpose(0, 1).squeeze()).view(len_out, -1, self.hp.M)
+        mu_x = mu_x.transpose(0, 1).squeeze().contiguous().view(len_out, -1, self.hp.M)
+        mu_y = mu_y.transpose(0, 1).squeeze().contiguous().view(len_out, -1, self.hp.M)
+        q = F.softmax(params_pen, dim = -1).view(len_out, -1, 3)    
         return pi, mu_x, mu_y, sigma_x, sigma_y, rho_xy, q, hidden, cell
 
 
