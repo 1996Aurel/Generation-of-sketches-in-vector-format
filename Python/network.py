@@ -52,7 +52,7 @@ class EncoderRNN(nn.Module):
             hidden_cell = (hidden, cell)
         _, (hidden,cell) = self.lstm(inputs.float(), hidden_cell)
         
-        # hidden is (2, batch_size, hidden_size), we want (batch_size, 2*hidden_size):
+        # hidden is (2, batch_size, hidden_size), we want (batch_size, 2 * hidden_size):
         hidden_forward, hidden_backward = torch.split(hidden, 1, 0)
         hidden_cat = torch.cat([hidden_forward.squeeze(0), hidden_backward.squeeze(0)], 1)
        
@@ -144,7 +144,7 @@ class CondDecoderRNN(nn.Module):
         outputs, (hidden,cell) = self.lstm(inputs, hidden_cell)
         ''' in training we feed the lstm with the whole input in one shot
             and use all outputs contained in 'outputs', while in generating
-            mode we just feed with the last generated sample:'''
+            mode we just feed with the last generated sample '''
         if self.training:
             y = self.fc_params(outputs.view(-1, self.hp.dec_hidden_size))
         else:
