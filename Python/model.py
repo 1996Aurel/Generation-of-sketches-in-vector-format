@@ -96,7 +96,7 @@ class Model():
         self.encoder_optimizer = utils.lr_decay(self.encoder_optimizer)
         self.decoder_optimizer = utils.lr_decay(self.decoder_optimizer)
         if step % 500 == 0:  
-            print("Step = ", step, " done", "loss = ",loss.item(),"LR = ",LR.item(),"LKL = ",LKL.item())
+            print("Step = ", step, " done", "loss = ", loss.item(), "LR = ", LR.item(), "LKL = ", LKL.item())
         return loss.item(), LR.item(), LKL.item()
 
 
