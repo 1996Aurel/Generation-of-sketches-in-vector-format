@@ -7,7 +7,6 @@ import PIL
 import torch
 from torch import optim
 from torch.autograd import Variable
-
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -16,10 +15,7 @@ import _pickle as cPickle #turn an object into a serie of bytes
 from IPython.display import SVG, display
 import svgwrite
 
-
 import math 
-
-
 import os 
 
 
@@ -60,7 +56,7 @@ class HParams():
 hp = HParams()
 
 
-### Functions to load and prepare the data: 
+# Functions to load and prepare the data: 
 
 def max_size(data):
     '''larger sequence length in the data set'''
@@ -74,7 +70,7 @@ def purify(strokes):
         if seq.shape[0] <= hp.max_seq_length and seq.shape[0] > 10:
             seq = np.minimum(seq, 1000)
             seq = np.maximum(seq, -1000)
-            seq = np.array(seq, dtype=np.float32)
+            seq = np.array(seq, dtype = np.float32)
             data.append(seq)
     return data
 
@@ -152,9 +148,7 @@ def lr_decay(optimizer):
     return optimizer
 
 
-
-
-### Functions to draw in svg and print on a jupyter notebook: 
+# Functions to draw in svg and print on a jupyter notebook: 
 
 def get_bounds(data, factor = 10):
     '''return bounds of data'''
@@ -178,7 +172,7 @@ def get_bounds(data, factor = 10):
     return (min_x, max_x, min_y, max_y)
 
 
-def draw_strokes(data, factor = 0.02, svg_filename = './sample.svg', display_image = False, save_image = False):  # factor modifies the size (initially 0.2)
+def draw_strokes(data, factor = 0.02, svg_filename = './sample.svg', display_image = False, save_image = False):  # factor modifies the size (initially 0.02)
     '''a function to display vector images and saves them as .svg images'''
     min_x, max_x, min_y, max_y = get_bounds(data, factor)
     dims = (50 + max_x - min_x, 50 + max_y - min_y)
@@ -226,7 +220,7 @@ def to_normal_strokes(big_stroke):
 
 ### other functions:
 
-def sample_bivariate_normal(mu_x, mu_y, sigma_x, sigma_y, rho_xy, greedy=False):
+def sample_bivariate_normal(mu_x, mu_y, sigma_x, sigma_y, rho_xy, greedy = False):
     '''use the parameters mu, sigma and rho to sample and return x & y '''
     # inputs must be floats
     if greedy:
@@ -264,8 +258,8 @@ def scale_bound(stroke, average_dimension = 10.0):
 def draw_grid(list_of_drawings, factor = 0.2, svg_filename = './sample.svg', save_grid = False):  
     ''' create and display a grid of drawings'''
     dims = (100 * len(list_of_drawings), 100)
-    dwg = svgwrite.Drawing(svg_filename, size=dims)
-    dwg.add(dwg.rect(insert=(0, 0), size=dims, fill='black'))     ##list draw_replace data
+    dwg = svgwrite.Drawing(svg_filename, size = dims)
+    dwg.add(dwg.rect(insert=(0, 0), size = dims, fill = 'black'))     ##list draw_replace data
     
     for i in range(len(list_of_drawings)):
         data = list_of_drawings[i]
