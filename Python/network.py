@@ -5,7 +5,6 @@ import PIL
 import torch
 from torch import optim
 from torch.autograd import Variable
-
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -17,14 +16,13 @@ import svgwrite
 import os 
 import Python.utils as utils 
 
-### Just for simplicity:
 
 use_cuda = torch.cuda.is_available()
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
 
-### The encoder module:
+# The encoder module:
 
 class EncoderRNN(nn.Module):
     def __init__(self, hp):
@@ -35,7 +33,7 @@ class EncoderRNN(nn.Module):
         # create mu and sigma from lstm's last output:
         self.fc_mu = nn.Linear(2 * hp.enc_hidden_size, hp.Nz)
         self.fc_sigma = nn.Linear(2 * hp.enc_hidden_size, hp.Nz)
-        #hp 
+        # hp 
         self.hp = hp
         # active dropouts:
         self.train()
@@ -73,7 +71,7 @@ class EncoderRNN(nn.Module):
 
 
 
-### The decoder module 
+# The decoder module 
 
 class DecoderRNN(nn.Module):
     def __init__(self, hp):
@@ -92,9 +90,9 @@ class DecoderRNN(nn.Module):
             hidden,cell = torch.split(torch.tanh(self.fc_hc(z)), self.hp.dec_hidden_size, 1)
             hidden_cell = (hidden.unsqueeze(0).contiguous(), cell.unsqueeze(0).contiguous())
         outputs, (hidden,cell) = self.lstm(inputs, hidden_cell)
-        ''' in training we feed the lstm with the whole input in one shot
-            and use all outputs contained in 'outputs', while in generating
-            mode we just feed with the last generated sample:'''
+        # NB: in training we feed the lstm with the whole input in one shot
+        # and use all outputs contained in 'outputs', while in generating
+        # mode we just feed with the last generated sample
         if self.training:
             y = self.fc_params(outputs.view(-1, self.hp.dec_hidden_size))
         else:
@@ -123,7 +121,7 @@ class DecoderRNN(nn.Module):
 
 
 
-### The Conditional decoder module 
+# The Conditional decoder module 
 
 class CondDecoderRNN(nn.Module):
     def __init__(self, hp):
@@ -142,9 +140,9 @@ class CondDecoderRNN(nn.Module):
             hidden,cell = torch.split(torch.tanh(self.fc_hc(z)), self.hp.dec_hidden_size, 1)
             hidden_cell = (hidden.unsqueeze(0).contiguous(), cell.unsqueeze(0).contiguous())
         outputs, (hidden,cell) = self.lstm(inputs, hidden_cell)
-        ''' in training we feed the lstm with the whole input in one shot
-            and use all outputs contained in 'outputs', while in generating
-            mode we just feed with the last generated sample '''
+        # NB: in training we feed the lstm with the whole input in one shot
+        # and use all outputs contained in 'outputs', while in generating
+        # mode we just feed with the last generated sample '''
         if self.training:
             y = self.fc_params(outputs.view(-1, self.hp.dec_hidden_size))
         else:
