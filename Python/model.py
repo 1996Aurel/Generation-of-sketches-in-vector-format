@@ -5,7 +5,6 @@ import PIL
 import torch
 from torch import optim
 from torch.autograd import Variable
-
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -20,7 +19,7 @@ import Python.network as network
 
 use_cuda = torch.cuda.is_available()
 
-### The model module:
+# The model module:
  
 class Model():
     def __init__(self, hp, Nmax):
@@ -211,13 +210,5 @@ class Model():
             return Variable(next_state.cuda()).view(1, 1, -1), x, y, q_idx == 1, q_idx == 2
         else:
             return Variable(next_state).view(1, 1, -1), x, y, q_idx == 1, q_idx == 2
-
-
-
-
-
-
-
-
 
 
