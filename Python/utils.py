@@ -59,12 +59,12 @@ hp = HParams()
 # Functions to load and prepare the data: 
 
 def max_size(data):
-    '''larger sequence length in the data set'''
+    ''' Returns the larger sequence length in the data set'''
     sizes = [len(seq) for seq in data]
     return max(sizes)
 
 def purify(strokes):
-    '''removes too small or too long sequences + removes large gaps'''
+    ''' Removes too small or too long sequences + removes large gaps'''
     data = []
     for seq in strokes:
         if seq.shape[0] <= hp.max_seq_length and seq.shape[0] > 10:
@@ -75,7 +75,7 @@ def purify(strokes):
     return data
 
 def calculate_normalizing_scale_factor(strokes):
-    '''calculate the normalizing factor explained in appendix of sketch-rnn '''
+    ''' Calculate the normalizing factor explained in appendix of sketch-rnn '''
     data = []
     for i in range(len(strokes)):
         for j in range(len(strokes[i])):
@@ -85,7 +85,7 @@ def calculate_normalizing_scale_factor(strokes):
     return np.std(data)   # the standart deviation of data 
 
 def normalize(strokes):
-    '''normalize entire dataset (delta_x, delta_y) by the scaling factor'''
+    ''' Normalize the whole dataset (delta_x, delta_y) by the scaling factor'''
     data = []
     scale_factor = calculate_normalizing_scale_factor(strokes)
     for seq in strokes:
@@ -95,7 +95,7 @@ def normalize(strokes):
 
 
 def load_data(data_location): 
-    '''load the data from data_location'''
+    ''' Load the data from data_location'''
     dataset = np.load(data_location, encoding = 'latin1', allow_pickle = True)
     data = dataset['train']
     data_test = dataset['test']
@@ -109,11 +109,10 @@ def load_data(data_location):
     return data, data_test 
 
 
-## Function to generate a batch:
+# Function to generate a batch:
 
 def make_batch(data, Nmax, batch_size = 100):
-    '''function to generate a batch of size batch_size'''
-    #Nmax = max_size(data)
+    ''' Function to generate a batch of size batch_size'''
     batch_idx = np.random.choice(len(data), batch_size)  #This is equivalent to np.random.randint(0, len(data), batch_size)
     batch_sequences = [data[idx] for idx in batch_idx]
     strokes = []
@@ -138,20 +137,20 @@ def make_batch(data, Nmax, batch_size = 100):
     return batch, lengths
 
 
-## Adaptive learning rate 
+# Adaptive learning rate 
 
 def lr_decay(optimizer):
-    '''decrease the learning rate by a factor lr_decay'''
+    ''' Decrease the learning rate by a factor lr_decay'''
     for param_group in optimizer.param_groups:
         if param_group['lr'] > hp.min_lr:
             param_group['lr'] *= hp.lr_decay
     return optimizer
 
 
-# Functions to draw in svg and print on a jupyter notebook: 
+# Functions to draw in svg and print drawings in a jupyter notebook: 
 
 def get_bounds(data, factor = 10):
-    '''return bounds of data'''
+    ''' Return bounds of data'''
     min_x = 0
     max_x = 0
     min_y = 0
@@ -173,7 +172,7 @@ def get_bounds(data, factor = 10):
 
 
 def draw_strokes(data, factor = 0.02, svg_filename = './sample.svg', display_image = False, save_image = False):  # factor modifies the size (initially 0.02)
-    '''a function to display vector images and saves them as .svg images'''
+    ''' A function to display vector images and saves them as .svg images'''
     min_x, max_x, min_y, max_y = get_bounds(data, factor)
     dims = (50 + max_x - min_x, 50 + max_y - min_y)
     dwg = svgwrite.Drawing(svg_filename, size = dims)
@@ -204,7 +203,7 @@ def draw_strokes(data, factor = 0.02, svg_filename = './sample.svg', display_ima
 
 
 def to_normal_strokes(big_stroke):
-    '''convert stroke-5 format back to stroke-3 format'''
+    ''' Convert stroke-5 format back to stroke-3 format'''
     l = 0
     for i in range(len(big_stroke)):
         if big_stroke[i, 4] > 0:
@@ -218,10 +217,10 @@ def to_normal_strokes(big_stroke):
     return result
 
 
-### other functions:
+# Other functions:
 
 def sample_bivariate_normal(mu_x, mu_y, sigma_x, sigma_y, rho_xy, greedy = False):
-    '''use the parameters mu, sigma and rho to sample and return x & y '''
+    ''' Use the parameters mu, sigma and rho to sample and return x & y '''
     # inputs must be floats
     if greedy:
       return mu_x, mu_y
@@ -245,10 +244,10 @@ def sample_bivariate_normal(mu_x, mu_y, sigma_x, sigma_y, rho_xy, greedy = False
 
 
 
-### Functions to visualise the results (scale the image and make a grid): 
+# Functions to visualise the results (scale the image and make a grid): 
 
 def scale_bound(stroke, average_dimension = 10.0):
-    ''' scale the image to be less than a certain size'''
+    ''' Scale the image to be less than a certain size'''
     # stroke is a numpy array of [dx, dy, pen_state] and average_dimension is a float.
     bounds = get_bounds(stroke, factor = 1)
     max_dimension = max(bounds[1] - bounds[0], bounds[3] - bounds[2])
@@ -256,7 +255,7 @@ def scale_bound(stroke, average_dimension = 10.0):
 
 
 def draw_grid(list_of_drawings, factor = 0.2, svg_filename = './sample.svg', save_grid = False):  
-    ''' create and display a grid of drawings'''
+    ''' Create and display a grid of drawings'''
     dims = (100 * len(list_of_drawings), 100)
     dwg = svgwrite.Drawing(svg_filename, size = dims)
     dwg.add(dwg.rect(insert=(0, 0), size = dims, fill = 'black'))     ##list draw_replace data
@@ -288,17 +287,17 @@ def draw_grid(list_of_drawings, factor = 0.2, svg_filename = './sample.svg', sav
     display(SVG(dwg.tostring()))
 
 
-### Functions used to make an interpolation: 
+# Functions used to make an interpolation: 
 
 def slerp(p0, p1, t):
-  '''spherical interpolation'''
+  '''Spherical interpolation'''
   omega = np.arccos(np.dot(p0 / np.linalg.norm(p0), p1 / np.linalg.norm(p1)))
   so = np.sin(omega)
   return np.sin((1.0 - t) * omega) / so * p0 + np.sin(t * omega) / so * p1
 
 
 def cond_decoding(z, model, Nmax, draw = True):
-    ## Conditional decoding (from a latent vector z): 
+    ''' Conditional decoding (from a latent vector z): '''
     if torch.cuda.is_available():
         sos = Variable(torch.Tensor([0, 0, 1, 0, 0]).view(1, 1, -1).cuda())
     else:
@@ -328,6 +327,8 @@ def cond_decoding(z, model, Nmax, draw = True):
     return sequence 
 
 def interpolation(z1, z2, model, Nmax, n = 10):
+    ''' Make interpolation (ie the transition from one drawing to an other) 
+        from 2 latent vectors '''
     z_list = []
     z1 = z1.view(-1)
     z2 = z2.view(-1)
