@@ -5,7 +5,6 @@ import PIL
 import torch
 from torch import optim
 from torch.autograd import Variable
-
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -19,10 +18,9 @@ import Python.utils as utils
 import Python.network as network
 
 use_cuda = torch.cuda.is_available()
-
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-### The model module:
+# The model module:
  
 class Cond_Model():
     def __init__(self, hp, Nmax):
@@ -62,7 +60,7 @@ class Cond_Model():
 
 
 
-# The new function to train 
+# The training function 
     def train(self, data, data_class, step): 
         self.encoder.train()
         self.decoder.train()
@@ -152,7 +150,7 @@ class Cond_Model():
         self.decoder.load_state_dict(saved_decoder)
 
     def conditional_generation(self,  data, data_class):   
-        ''' generate a new drawing conditioned by an other drawing as input '''
+        ''' Generate a new drawing conditioned by an other drawing as input '''
         batch, _ = utils.make_batch(data, self.Nmax, 1)
         # Remove dropouts:
         self.encoder.train(False)
