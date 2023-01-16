@@ -11,7 +11,7 @@ __Models:__
 
 - Single class of images: 
 
-Our Pytorch version of Sketch-RNN was initially trained with a single class of images, which allowed us to better explore the role of W<sub>KL<\sub> in the loss function:  Loss = L<sub>R<\sub> + W<sub>KL<\sub> · L<sub>KL<\sub>
+Our Pytorch version of Sketch-RNN was initially trained with a single class of images, which allowed us to better explore the role of W<sub>KL;<\sub> in the loss function:  Loss = L<sub>R<\sub> + W<sub>KL<\sub> · L<sub>KL<\sub>
 
 
 
