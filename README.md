@@ -9,9 +9,25 @@ In this project, we tried to extend the generation of images in vector format to
 
 __Models:__
 
+The sketch-RNN model is a sequence-to-sequence Variational Autoencoder, as presented in the figure below:
+
+![image](https://user-images.githubusercontent.com/121833780/212606996-34802c9d-f77a-4c76-b859-eba015a94e51.png)
+
+The encoder of Sketch-RNN is a bidirectional RNN fed with a sketch sequence, S = S→ , and the same sketch sequence in reverse order, S<sub>reverse</sub> = S←, to obtain the hidden state h = [h→, h←].
+
+The decoder is an auto-regressive RNN that samples output sketches conditioned on a given latent vector z. At each step i, the decoder is fed with the latent vector z and the previous sequence S<sub>i−1</sub> and outputs the parameters for a probability distribution of the next data point S<sub>i</sub>.
+
+
 - Single class of images: 
 
-Our Pytorch version of Sketch-RNN was initially trained with a single class of images, which allowed us to better explore the role of W<sub>KL</sub> in the loss function:  Loss = L<sub>R<\sub> + W<sub>KL<\sub> · L<sub>KL<\sub>
+Our Pytorch version of Sketch-RNN was initially trained with a single class of images, which allowed us to better explore the role of W<sub>KL</sub> in the loss function:  Loss = L<sub>R</sub> + W<sub>KL</sub> · L<sub>KL</sub>
+
+
+- Multiple classes of images: 
+
+It is also possible to train the model on multiple classes of images. When doing so, the model should be able to distinguish each class of images and be capable of generating new drawings of each class.
+
+However, to significantly improve the performance of the model trained with multiple classes of images, we gave an additional condition to the decoder of sketch-RNN. This condition was simply an integer specifying the class of the input, which was then concatenated with the latent vector coming from the encoder. Therefore, the decoder’s input became a vector of size Nz = 129 instead of Nz = 128. 
 
 
 
